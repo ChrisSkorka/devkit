@@ -1,4 +1,12 @@
-import sys, time, copy, threading, wx
+"""
+Debug provides methods for code debigging purposes
+
+"""
+
+
+
+import sys
+import time
 
 #debugging statement print
 #acts as print() but inserts caller stack frame information as first argument
