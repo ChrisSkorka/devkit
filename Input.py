@@ -1,4 +1,5 @@
 import wx
+from devkit.App import App
 
 class Input:
 	def __init__(self, name, value, onUpdate):
@@ -27,7 +28,7 @@ class Input:
 	def createWxWidget(self):
 		pass
 
-class InputButton(Input):
+class Button(Input):
 	def __init__(self, name, onClick=None):
 		Input.__init__(self, name, None, onClick)
 
@@ -44,7 +45,7 @@ class InputButton(Input):
 
 		return self.view
 
-class InputSlider(Input):
+class Slider(Input):
 	def __init__(self, name, value, onUpdate=None, sMin=0, sMax=100, sSteps=1):
 		Input.__init__(self, name, value, onUpdate)
 
@@ -79,7 +80,7 @@ class InputSlider(Input):
 
 		return sizer
 
-class InputCheckBox(Input):
+class CheckBox(Input):
 	def __init__(self, name, value, onUpdate=None):
 		Input.__init__(self, name, value, onUpdate)
 
@@ -98,8 +99,8 @@ class InputCheckBox(Input):
 
 		return self.view
 
-class InputText(Input):
-	def __init__(self, name, value, onUpdate=None):
+class Text(Input):
+	def __init__(self, name, value='', onUpdate=None):
 		Input.__init__(self, name, value, onUpdate)
 
 	def updateWidget(self):
@@ -116,7 +117,7 @@ class InputText(Input):
 
 		return self.view
 
-class InputColor(Input):
+class Color(Input):
 	def __init__(self, name, value, onUpdate=None):
 		Input.__init__(self, name, value, onUpdate)
 
@@ -135,7 +136,7 @@ class InputColor(Input):
 
 		return self.view
 
-class InputFile(Input):
+class File(Input):
 	def __init__(self, name, value, onUpdate=None):
 		Input.__init__(self, name, value, onUpdate)
 
@@ -153,7 +154,7 @@ class InputFile(Input):
 
 		return self.view
 
-class InputFolder(Input):
+class Folder(Input):
 	def __init__(self, name, value, onUpdate=None):
 		Input.__init__(self, name, value, onUpdate)
 
@@ -170,59 +171,6 @@ class InputFolder(Input):
 		self.view.Bind(wx.EVT_DIRPICKER_CHANGED, self.processUpdate)
 
 		return self.view
-
-class InputFrame(wx.Frame):
-	def __init__(self, parent, title, inputs):
-		wx.Frame.__init__(self, None, title=title)
-
-		self.panel = wx.Panel(self)
-		self.sizer = wx.GridBagSizer(hgap=5, vgap=5)
-
-		row = 0
-		for control in inputs:
-			txt = wx.StaticText(self.panel, label = control.name)
-			view = control.createWxWidget(self.panel)
-			view.SetMinSize((300, 0))
-
-			self.sizer.Add(txt, pos = (row, 0), flag = wx.EXPAND)
-			self.sizer.Add(view, pos = (row, 1), flag = wx.EXPAND)
-
-			row += 1
-
-		self.panel.SetSizerAndFit(self.sizer)
-		self.Fit()
-		self.Show()
-
-class Inputs:
-	def __init__(self, title="Inputs", state=None):
-		self.inputs = {}
-		self.title = title
-		self.state = state
-
-	def addInput(self, controls, window=None):
-		controls.state = self.state
-
-		if window == None:
-			window = self.title
-
-		if window in self.inputs:
-			self.inputs[window].append(controls)
-		else:
-			self.inputs[window] = [controls]
-
-	def getFrames(self):
-		frames = []
-		
-		for window in self.inputs:
-			frames.append(InputFrame(self, window, self.inputs[window]))
-
-		return frames
-
-	def show(self):
-		
-		self.app = wx.App()
-		self.getFrames()
-		self.app.MainLoop()
 
 def exampleUpdate(control, value, state):
 	dprint(control.name, value)
